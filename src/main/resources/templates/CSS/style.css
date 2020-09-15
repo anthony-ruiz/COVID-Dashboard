@@ -1,0 +1,11 @@
+body{
+    background-color: white;
+}
+.FullCointainer{
+  background-color: white;
+}
+
+#map {
+  width: 800;
+  height: 800px;
+}
