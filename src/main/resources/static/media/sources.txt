@@ -3,3 +3,5 @@ https://eric.clst.org/tech/usgeojson/
 Albers Composite GeoJson:
 https://rstudio-pubs-static.s3.amazonaws.com/166138_681942e74efa4734bfe153e40760c566.html
 
+STATE Abreviations:
+https://www.ssa.gov/international/coc-docs/states.html
