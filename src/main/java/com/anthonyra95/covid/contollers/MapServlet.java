@@ -5,7 +5,7 @@ import com.anthonyra95.covid.domain.State;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
+
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -16,8 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-public class JsonController extends HttpServlet {
+public class MapServlet extends HttpServlet {
     
+    
+    private static final long serialVersionUID = 1L;
+
+    private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -27,14 +32,13 @@ public class JsonController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-
-    private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         ObjectMapper mapper = new ObjectMapper();
         State stateRequested = mapper.readValue(body, State.class);
         //the BE gets the state for which data is requested
+        
+        
         log.info(stateRequested.getName());
     }
 

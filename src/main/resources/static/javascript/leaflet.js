@@ -1,3 +1,4 @@
+
  var mymap = L.map('map',{ zoomControl: false }).setView([40, -100], 5);
 
 //background layer
@@ -17,35 +18,15 @@ var myStyle = {
 var geojsonFeature  = usa_map;
 var geoLayer = L.geoJSON(geojsonFeature, {style : myStyle}).addTo(mymap);
 
-//info that will be shown 
 function onEachFeature(feature, layer) {
-    if (feature.properties && feature.properties.NAME) {
-        layer.bindPopup(feature.properties.NAME);
-        console.log(feature.properties.NAME);
-    }
-}
+    //bind click
+    layer.on('click', function (e) {
+      // e = event
+      console.log(feature.properties.NAME);
+      e.NA
+    });
 
-L.geoJSON(geojsonFeature, {
+}
+geojson = L.geoJSON(geojsonFeature, {
     onEachFeature: onEachFeature
 }).addTo(mymap);
-
-
-// mymap.dragging.disable();
-// mymap.touchZoom.disable();
-// mymap.doubleClickZoom.disable();
-// mymap.scrollWheelZoom.disable();
-
-//var info = L.control();
-
-//info.onAdd = function (mymap) {
-//    this._div = L.DomUtil.create('div', 'info');
-//    this.update();
-//    return this._div;
-//};
-//
-//info.update = function (props) {
-//    this._div.innerHTML = '<h4>State Information</h4>' + (props ?
-//        '<b> State : ' + props.STATENAME : 'Hover over a state');
-//};
-//info.addTo(mymap);
-

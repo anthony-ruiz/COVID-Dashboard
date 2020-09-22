@@ -3,10 +3,17 @@ package com.anthonyra95.covid.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
 public class State {
 
+    private @Id
+    @GeneratedValue Long id;
     private String name;
     private int positive;
     private int negative;
@@ -17,6 +24,26 @@ public class State {
     private int recovered;
 
     public State() {
+    }
+
+    public State(Long id, String name, int positive, int negative, int hospitalizedCurrently, int hospitalizedCumulative, int inIcuCurrently, int inIcuCumulative, int recovered) {
+        this.id = id;
+        this.name = name;
+        this.positive = positive;
+        this.negative = negative;
+        this.hospitalizedCurrently = hospitalizedCurrently;
+        this.hospitalizedCumulative = hospitalizedCumulative;
+        this.inIcuCurrently = inIcuCurrently;
+        this.inIcuCumulative = inIcuCumulative;
+        this.recovered = recovered;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @JsonProperty("state")

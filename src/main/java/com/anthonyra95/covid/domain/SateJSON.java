@@ -1,2 +1,4 @@
-package com.anthonyra95.covid.domain;public class SateJSON {
+package com.anthonyra95.covid.domain;
+
+public class SateJSON {
 }
