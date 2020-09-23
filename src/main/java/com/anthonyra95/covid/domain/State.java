@@ -2,9 +2,10 @@ package com.anthonyra95.covid.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
-
-
+// Data tag creates setters and getters automatically
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class State {
 
@@ -20,7 +21,7 @@ public class State {
     public State() {
     }
 
-    //@ is used in order to tell Jackson that our name field corresponds to data label "state"
+    //Tag is used in order to tell Jackson that our name field corresponds to data label "state"
     @JsonProperty("state")
     public String getName() {
         return name;
@@ -31,61 +32,6 @@ public class State {
         this.name = name;
     }
 
-    public int getPositive() {
-        return positive;
-    }
-
-    public void setPositive(int positive) {
-        this.positive = positive;
-    }
-
-    public int getNegative() {
-        return negative;
-    }
-
-    public void setNegative(int negative) {
-        this.negative = negative;
-    }
-
-    public int getHospitalizedCurrently() {
-        return hospitalizedCurrently;
-    }
-
-    public void setHospitalizedCurrently(int hospitalizedCurrently) {
-        this.hospitalizedCurrently = hospitalizedCurrently;
-    }
-
-    public int getHospitalizedCumulative() {
-        return hospitalizedCumulative;
-    }
-
-    public void setHospitalizedCumulative(int hospitalizedCumulative) {
-        this.hospitalizedCumulative = hospitalizedCumulative;
-    }
-
-    public int getInIcuCurrently() {
-        return inIcuCurrently;
-    }
-
-    public void setInIcuCurrently(int inIcuCurrently) {
-        this.inIcuCurrently = inIcuCurrently;
-    }
-
-    public int getInIcuCumulative() {
-        return inIcuCumulative;
-    }
-
-    public void setInIcuCumulative(int inIcuCumulative) {
-        this.inIcuCumulative = inIcuCumulative;
-    }
-
-    public int getRecovered() {
-        return recovered;
-    }
-
-    public void setRecovered(int recovered) {
-        this.recovered = recovered;
-    }
 
     @Override
     public String toString() {

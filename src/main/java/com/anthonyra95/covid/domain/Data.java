@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -59,11 +60,12 @@ public class Data {
     }
 
     private void populateStateAbreviations() throws IOException {
-        String csvFileToRead = "state_names.txt";
+        ClassLoader loader = Data.class.getClassLoader();
+        File FileToRead = new File(loader.getResource("static/media/state_names.txt").getFile());
         BufferedReader br = null;
         String line = "";
         String splitBy = ",";
-        br = new BufferedReader(new FileReader(csvFileToRead));
+        br = new BufferedReader(new FileReader(FileToRead));
         while ((line = br.readLine()) != null) {
             String[] stateLine = line.split(splitBy);
             stateNameAbrevMap.put(stateLine[0], stateLine[1]);
