@@ -1,5 +1,6 @@
 package com.anthonyra95.covid.contollers;
 
+import com.anthonyra95.covid.CovidApplication;
 import com.anthonyra95.covid.domain.Data;
 import com.anthonyra95.covid.domain.State;
 
@@ -18,8 +19,7 @@ public class StateController {
     @ResponseBody
     @RequestMapping(value = "/stateRequested", method = RequestMethod.POST, produces = "application/json")
     public State stateRequest(@RequestBody String stateJSON) throws IOException {
-        Data data = new Data();
-        data.populateData();
+        Data data = CovidApplication.getData();
         String stateName = stateJSON.toUpperCase();
         String abreviation = data.getStateAbreviation(stateName);
         State stateInfo = data.getStateData(abreviation);
