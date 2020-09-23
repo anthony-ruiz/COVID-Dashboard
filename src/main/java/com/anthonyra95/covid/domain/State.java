@@ -20,18 +20,7 @@ public class State {
     public State() {
     }
 
-//    public State(Long id, String name, int positive, int negative, int hospitalizedCurrently, int hospitalizedCumulative, int inIcuCurrently, int inIcuCumulative, int recovered) {
-//        this.id = id;
-//        this.name = name;
-//        this.positive = positive;
-//        this.negative = negative;
-//        this.hospitalizedCurrently = hospitalizedCurrently;
-//        this.hospitalizedCumulative = hospitalizedCumulative;
-//        this.inIcuCurrently = inIcuCurrently;
-//        this.inIcuCumulative = inIcuCumulative;
-//        this.recovered = recovered;
-//    }
-
+    //@ is used in order to tell Jackson that our name field corresponds to data label "state"
     @JsonProperty("state")
     public String getName() {
         return name;

@@ -5,6 +5,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+This is the controler for the main application.
+ responds when localhost:8080/mapController is called
+ */
+
 @Controller
 public class MapController {
 

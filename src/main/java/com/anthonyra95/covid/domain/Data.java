@@ -15,11 +15,15 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Data {
+
+/*  data sources refer to states by abreviation or full state name
+    a hashmap "stateNameAbrevMap" is used in order to link the data sources togethere
+*/
     private List<State> stateList = new ArrayList<State>();
     private HashMap<String,String> stateNameAbrevMap = new HashMap<String,String>();
 
     //creates a logger
-    private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
+    //private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
 
     public void populateData() throws IOException {
         populateStateData();
@@ -32,11 +36,11 @@ public class Data {
         stateList = mapper.readValue(new URL("https://api.covidtracking.com/v1/states/current.json"),
                 new TypeReference<List<State>>() {
                 });
+        //TESTING
         //print the states  and number of cases
-        for(State state: stateList){
-
-            log.info("saving state: " +  state.toString());
-        }
+//        for(State state: stateList){
+//            log.info("saving state: " +  state.toString());
+//        }
         
     }
     
@@ -66,16 +70,13 @@ public class Data {
         } 
         br.close();
 
-        
-        stateNameAbrevMap.forEach((key, value) -> {
-            log.info(key + ":" + value);
-
-            });
+        //TESTING
+        //prints the Hashmap of states names and state Abreviations
+//        stateNameAbrevMap.forEach((key, value) -> {
+//            log.info(key + ":" + value);
+//            });
         }
 
-    public HashMap<String, String> getStateNameAbrevMap(){
-        return stateNameAbrevMap;
-    }
     public String getStateAbreviation(String stateName){
         return  stateNameAbrevMap.get(stateName);
     }

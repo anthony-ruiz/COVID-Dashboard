@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 
+/**
+ * recieves the name of a state and returns an object
+ * for the corresponding state that contains all COVID related data
+ */
 
 @Controller
 public class StateController {
@@ -20,9 +24,10 @@ public class StateController {
     @RequestMapping(value = "/stateRequested", method = RequestMethod.POST, produces = "application/json")
     public State stateRequest(@RequestBody String stateJSON) throws IOException {
         Data data = CovidApplication.getData();
-        String stateName = stateJSON.toUpperCase();
-        String abreviation = data.getStateAbreviation(stateName);
-        State stateInfo = data.getStateData(abreviation);
+//        String stateName = stateJSON.toUpperCase();
+//        String abreviation = data.getStateAbreviation(stateName);
+//        State stateInfo = data.getStateData(abreviation);
+        State stateInfo = data.getStateData(data.getStateAbreviation(stateJSON.toUpperCase()));
         return stateInfo;
 
     }
