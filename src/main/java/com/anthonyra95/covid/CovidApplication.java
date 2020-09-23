@@ -1,6 +1,7 @@
 package com.anthonyra95.covid;
 
-import com.anthonyra95.covid.contollers.MapServlet;
+import com.anthonyra95.covid.contollers.StateController;
+import com.anthonyra95.covid.domain.Data;
 import com.anthonyra95.covid.domain.State;
 
 import com.anthonyra95.covid.domain.StateRepository;
@@ -27,19 +28,13 @@ public class CovidApplication {
 
 	//creates a logger
 	private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
-	//-----LOAD DATABASE-----
 	@Bean
 	public CommandLineRunner initData(StateRepository repository) throws Exception {
 		return args -> {
-			log.info("loading Database");
-			ObjectMapper mapper = new ObjectMapper();
-			List<State> stateList = mapper.readValue(new URL("https://api.covidtracking.com/v1/states/current.json"), new TypeReference<List<State>>() {});
-			//print the states  and number of cases
-			for(State state: stateList){
-				repository.save(state);
-				log.info("saving state: " +  state.toString());
-			}
-			log.info("Database loaded successfully");
+//			//load Covid data for each of the states
+//			Data data = new Data();
+//			data.populateData();
+
 		};
 	}
 

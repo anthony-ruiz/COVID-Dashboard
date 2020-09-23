@@ -1,57 +1,33 @@
 package com.anthonyra95.covid.contollers;
 
+import com.anthonyra95.covid.domain.Data;
 import com.anthonyra95.covid.domain.State;
-import com.anthonyra95.covid.domain.StateRepository;
-import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
 import java.util.List;
 
-@RestController
+@Controller
 public class StateController {
-    private final StateRepository repository;
 
-    StateController(StateRepository repository) {
-        this.repository = repository;
+    @ResponseBody
+    @RequestMapping(value = "/stateRequested", method = RequestMethod.POST, produces = "application/json")
+    public State stateRequest(@RequestBody String stateJSON) throws IOException { //
+        String test = "this is a test";
+        Data data = new Data();
+        data.populateData();
+        String stateName = stateJSON.toUpperCase();
+        String abreviation = data.getStateAbreviation(stateName);
+        State stateInfo = data.getStateData(abreviation);
+        return stateInfo;
+
     }
 
-    // Aggregate root
 
-    @GetMapping("/states")
-    List<State> all() {
-        return repository.findAll();
-    }
-
-    @PostMapping("states")
-    State newState(@RequestBody State newState) {
-        return repository.save(newState);
-    }
-
-    // Single item
-
-    @GetMapping("/states/{id}")
-    State one(@PathVariable Long id) {
-
-        return repository.findById(id)
-                .orElseThrow(() -> new StateNotFoundException(id));
-    }
-
-    @PutMapping("/states/{id}")
-    State replaceEmployee(@RequestBody State newState, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(state -> {
-                    state.setName(newState.getName());
-                    state.setPositive(newState.getPositive());
-                    return repository.save(state);
-                })
-                .orElseGet(() -> {
-                    newState.setId(id);
-                    return repository.save(newState);
-                });
-    }
-
-    @DeleteMapping("/states/{id}")
-    void deleteState(@PathVariable Long id) {
-        repository.deleteById(id);
-    }
 }

@@ -21,12 +21,37 @@ var geoLayer = L.geoJSON(geojsonFeature, {style : myStyle}).addTo(mymap);
 function onEachFeature(feature, layer) {
     //bind click
     layer.on('click', function (e) {
-      // e = event
-      console.log(feature.properties.NAME);
-      e.NA
+        console.log(feature.properties.NAME);
+        var stateObj = feature.properties.NAME
+        var loginJSON = JSON.stringify(stateObj);
+
+        $.ajax({
+            type: "POST",
+            url: "/stateRequested/",
+            contentType: "application/json",
+            data: stateObj,
+            dataType: 'text',
+            cache: false,
+            success: function (data) {
+//                //alert(data);
+//                if (data === "login failed") {
+//                    document.getElementById('failed').innerHTML = '<h2><font color="red">Invalid login!</font></h2>';
+//                } else {
+//                    localStorage.setItem("person", data);
+//                    window.location = "./signed_in.html";
+//                }
+                  console.log(data);
+            }
+        });
+        return false;
+
+
     });
 
 }
+
+
+
 geojson = L.geoJSON(geojsonFeature, {
     onEachFeature: onEachFeature
 }).addTo(mymap);

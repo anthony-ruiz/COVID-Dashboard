@@ -26,17 +26,17 @@ public class State {
     public State() {
     }
 
-    public State(Long id, String name, int positive, int negative, int hospitalizedCurrently, int hospitalizedCumulative, int inIcuCurrently, int inIcuCumulative, int recovered) {
-        this.id = id;
-        this.name = name;
-        this.positive = positive;
-        this.negative = negative;
-        this.hospitalizedCurrently = hospitalizedCurrently;
-        this.hospitalizedCumulative = hospitalizedCumulative;
-        this.inIcuCurrently = inIcuCurrently;
-        this.inIcuCumulative = inIcuCumulative;
-        this.recovered = recovered;
-    }
+//    public State(Long id, String name, int positive, int negative, int hospitalizedCurrently, int hospitalizedCumulative, int inIcuCurrently, int inIcuCumulative, int recovered) {
+//        this.id = id;
+//        this.name = name;
+//        this.positive = positive;
+//        this.negative = negative;
+//        this.hospitalizedCurrently = hospitalizedCurrently;
+//        this.hospitalizedCumulative = hospitalizedCumulative;
+//        this.inIcuCurrently = inIcuCurrently;
+//        this.inIcuCumulative = inIcuCumulative;
+//        this.recovered = recovered;
+//    }
 
     public Long getId() {
         return id;
