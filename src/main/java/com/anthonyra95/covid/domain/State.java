@@ -17,6 +17,7 @@ public class State {
     private int inIcuCurrently;
     private int inIcuCumulative;
     private int recovered;
+    private int population;
 
     public State() {
     }
@@ -39,5 +40,13 @@ public class State {
                 "name='" + name + '\'' +
                 ", positive=" + positive +
                 '}';
+    }
+
+    public int getPopulation() {
+        return population;
+    }
+
+    public void setPopulation(int population) {
+        this.population = population;
     }
 }

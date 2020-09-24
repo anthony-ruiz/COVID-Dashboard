@@ -27,7 +27,7 @@ public class StateController {
 //        String stateName = stateJSON.toUpperCase();
 //        String abreviation = data.getStateAbreviation(stateName);
 //        State stateInfo = data.getStateData(abreviation);
-        State stateInfo = data.getStateData(data.getStateAbreviation(stateJSON.toUpperCase()));
+        State stateInfo = data.getStateData(data.getStateAbreviation(stateJSON));
         return stateInfo;
 
     }

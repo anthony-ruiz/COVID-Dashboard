@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +26,7 @@ public class Data {
     public void populateData() throws IOException {
         populateStateData();
         populateStateAbreviations();
+        populateStatePopulation();
     }
 
 
@@ -77,9 +75,26 @@ public class Data {
 //        stateNameAbrevMap.forEach((key, value) -> {
 //            log.info(key + ":" + value);
 //            });
+    }
+    private void populateStatePopulation() throws IOException {
+        ClassLoader loader = Data.class.getClassLoader();
+        File FileToRead = new File(loader.getResource("static/media/states_population.txt").getFile());
+        BufferedReader br = null;
+        String line = "";
+        String splitBy = ",";
+        br = new BufferedReader(new FileReader(FileToRead));
+        while ((line = br.readLine()) != null) {
+            String[] stateLine = line.split(splitBy);
+            for(State state : stateList){
+              if(state.getName().equals(getStateAbreviation(stateLine[0])) ){
+                  state.setPopulation(Integer.parseInt(stateLine[1]));
+              }
+            }
         }
+        br.close();
+    }
 
     public String getStateAbreviation(String stateName){
-        return  stateNameAbrevMap.get(stateName);
+        return  stateNameAbrevMap.get(stateName.toUpperCase());
     }
 }
