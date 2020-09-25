@@ -21,7 +21,7 @@ public class Data {
     private HashMap<String,String> stateNameAbrevMap = new HashMap<String,String>();
 
     //creates a logger
-    //private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
 
     public void populateData() throws IOException {
         populateStateData();
@@ -37,9 +37,10 @@ public class Data {
                 });
         //TESTING
         //print the states  and number of cases
-//        for(State state: stateList){
-//            log.info("saving state: " +  state.toString());
-//        }
+        log.info("populating state data");
+        for(State state: stateList){
+            log.info("saving state: " +  state.toString());
+        }
         
     }
     
@@ -72,9 +73,9 @@ public class Data {
 
         //TESTING
         //prints the Hashmap of states names and state Abreviations
-//        stateNameAbrevMap.forEach((key, value) -> {
-//            log.info(key + ":" + value);
-//            });
+        stateNameAbrevMap.forEach((key, value) -> {
+            log.info(key + ":" + value);
+            });
     }
     private void populateStatePopulation() throws IOException {
         ClassLoader loader = Data.class.getClassLoader();
@@ -88,6 +89,7 @@ public class Data {
             for(State state : stateList){
               if(state.getName().equals(getStateAbreviation(stateLine[0])) ){
                   state.setPopulation(Integer.parseInt(stateLine[1]));
+                  log.info(state.toString());
               }
             }
         }

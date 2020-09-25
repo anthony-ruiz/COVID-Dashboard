@@ -2,8 +2,11 @@
  var mymap = L.map('map',{ zoomControl: false }).setView([40, -100], 5);
 
 //background layer
-L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+        '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+        'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    id: 'mapbox.light',
     maxZoom: 7,
     minZoom: 5
 }).addTo(mymap);
@@ -11,8 +14,8 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_L
 //color for the states
 var myStyle = {
     "color": "#1a94ff",
-    "weight": 2,
-    "opacity": 0.65
+    "weight": 1,
+    "opacity": 0.25
 };
 
 var geojsonFeature  = usa_map;
@@ -33,13 +36,6 @@ function onEachFeature(feature, layer) {
             dataType: 'text',
             cache: false,
             success: function (data) {
-//                //alert(data);
-//                if (data === "login failed") {
-//                    document.getElementById('failed').innerHTML = '<h2><font color="red">Invalid login!</font></h2>';
-//                } else {
-//                    localStorage.setItem("person", data);
-//                    window.location = "./signed_in.html";
-//                }
                   console.log(data);
             }
         });
@@ -49,6 +45,19 @@ function onEachFeature(feature, layer) {
     });
 
 }
+
+var stateObjt = "Test"
+$.ajax({
+    type: "POST",
+    url: "/casesPerMil/",
+    contentType: "application/json",
+    data: stateObjt,
+    dataType: 'text',
+    cache: false,
+    success: function (data) {
+    console.log(data);
+    }
+});
 
 
 

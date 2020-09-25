@@ -1,22 +1,36 @@
 package com.anthonyra95.covid.contollers;
 
+import com.anthonyra95.covid.CovidApplication;
+import com.anthonyra95.covid.domain.Data;
+import com.anthonyra95.covid.domain.State;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.slf4j.*;
 
-/**
-This is the controler for the main application.
- responds when localhost:8080/mapController is called
- */
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class MapController {
 
-    @GetMapping("/mapController")
-    public String mapController(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model){
-        model.addAttribute("name", name);
-        return "map";
+    private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
+
+    @ResponseBody
+    @RequestMapping(value = "/casesPerMil", method = RequestMethod.POST, produces = "application/json")
+    public Map casesPerMil(@RequestBody String stateJSON) throws IOException {
+        Data data = CovidApplication.getData();
+        HashMap<String,Integer> casesPerMilMap = new HashMap<String, Integer>();
+        for(State state : data.getStateList()){
+            if(state.getPopulation() != 0 ){
+                int hundredThousandsOfPeople = state.getPopulation() / 100000;
+                casesPerMilMap.put(state.toString(), state.getPositive() / hundredThousandsOfPeople);
+                log.info(state.getName() + " : " + state.getPositive() / hundredThousandsOfPeople + " Cases per 100k");
+            }
+        }
+        return casesPerMilMap;
     }
+
 
 }

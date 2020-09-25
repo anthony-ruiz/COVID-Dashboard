@@ -22,6 +22,21 @@ public class State {
     public State() {
     }
 
+    @Override
+    public String toString() {
+        return "State{" +
+                "name='" + name + '\'' +
+                ", positive=" + positive +
+                ", negative=" + negative +
+                ", hospitalizedCurrently=" + hospitalizedCurrently +
+                ", hospitalizedCumulative=" + hospitalizedCumulative +
+                ", inIcuCurrently=" + inIcuCurrently +
+                ", inIcuCumulative=" + inIcuCumulative +
+                ", recovered=" + recovered +
+                ", population=" + population +
+                '}';
+    }
+
     //Tag is used in order to tell Jackson that our name field corresponds to data label "state"
     @JsonProperty("state")
     public String getName() {
@@ -34,19 +49,67 @@ public class State {
     }
 
 
-    @Override
-    public String toString() {
-        return "State{" +
-                "name='" + name + '\'' +
-                ", positive=" + positive +
-                '}';
-    }
-
     public int getPopulation() {
         return population;
     }
 
     public void setPopulation(int population) {
         this.population = population;
+    }
+
+    public int getPositive() {
+        return positive;
+    }
+
+    public void setPositive(int positive) {
+        this.positive = positive;
+    }
+
+    public int getNegative() {
+        return negative;
+    }
+
+    public void setNegative(int negative) {
+        this.negative = negative;
+    }
+
+    public int getHospitalizedCurrently() {
+        return hospitalizedCurrently;
+    }
+
+    public void setHospitalizedCurrently(int hospitalizedCurrently) {
+        this.hospitalizedCurrently = hospitalizedCurrently;
+    }
+
+    public int getHospitalizedCumulative() {
+        return hospitalizedCumulative;
+    }
+
+    public void setHospitalizedCumulative(int hospitalizedCumulative) {
+        this.hospitalizedCumulative = hospitalizedCumulative;
+    }
+
+    public int getInIcuCurrently() {
+        return inIcuCurrently;
+    }
+
+    public void setInIcuCurrently(int inIcuCurrently) {
+        this.inIcuCurrently = inIcuCurrently;
+    }
+
+    public int getInIcuCumulative() {
+        return inIcuCumulative;
+    }
+
+    public void setInIcuCumulative(int inIcuCumulative) {
+        this.inIcuCumulative = inIcuCumulative;
+    }
+
+    public int getRecovered() {
+        return recovered;
+    }
+
+    public void setRecovered(int recovered) {
+        this.recovered = recovered;
     }
 }
