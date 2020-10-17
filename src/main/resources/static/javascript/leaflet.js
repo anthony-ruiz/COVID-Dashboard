@@ -1,6 +1,6 @@
 
- var mymap = L.map('map',{ zoomControl: false }).setView([40, -100], 5);
-
+var mymap = L.map('map',{ zoomControl: false }).setView([40, -100], 5);
+var geojsonFeature  = usa_map;
 
 //background layer
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
@@ -12,23 +12,66 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
     minZoom: 5
 }).addTo(mymap);
 
-//color for the states
-var myStyle = {
-    "color": "#1a94ff",
-    "weight": 1,
-    "opacity": 0.25
-};
 
-var geojsonFeature  = usa_map;
-var geoLayer = L.geoJSON(geojsonFeature, {style : myStyle}).addTo(mymap);
+//gets the number of cases per mil for all states
+$.ajax({
+    type: "POST",
+    url: "/casesPerMil/",
+    contentType: "application/json",
+    data: "Test",
+    dataType: 'text',
+    cache: false,
+    success: function (data) {
+    console.log(data);
+    var stateCasesMap = JSON.parse(data);
+    createStateCasesHashMap(stateCasesMap);
 
+    geojson = L.geoJSON(geojsonFeature, {
+        style: styleState,
+        onEachFeature: onEachFeature
+    }).addTo(mymap);
+    }
+});
+
+//create a hashmap of the Key:State | Value: Cases per Mil
+var stateCasesHashMap;
+function createStateCasesHashMap(stateCasesMap){
+    stateCasesHashMap = new Map(Object.entries(stateCasesMap));
+}
+
+//Color the state states depending on cases
+function styleState(feature) {
+    let stateName = feature.properties.NAME
+    let cases = stateCasesHashMap.get(stateName.toUpperCase());
+    return {
+        fillColor: getColor(cases),
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.5
+    };
+}
+
+//color : number of cases key
+function getColor(cases) {
+    return cases > 3000  ? '#800026' :
+           cases > 2500  ? '#BD0026' :
+           cases > 2000  ? '#E31A1C' :
+           cases > 1500  ? '#FC4E2A' :
+           cases > 1000  ? '#FD8D3C' :
+           cases > 500   ? '#FEB24C' :
+           cases > 100   ? '#FED976' :
+                           '#FFEDA0';
+}
+
+//bind States to create request (get specific  information of state)
 function onEachFeature(feature, layer) {
-    //bind click
+
     layer.on('click', function (e) {
-
         var stateName = feature.properties.NAME
-        console.log(stateName);
-
+        console.log(stateName)
+        //when the state is clicked it creates a request
         $.ajax({
             type: "POST",
             url: "/stateRequested/",
@@ -41,62 +84,7 @@ function onEachFeature(feature, layer) {
             }
         });
         return false;
-
     });
-
-}
-geojson = L.geoJSON(geojsonFeature, {
-    onEachFeature: onEachFeature
-}).addTo(mymap);
-
-
-
-var stateObjt = "Test"
-$.ajax({
-    type: "POST",
-    url: "/casesPerMil/",
-    contentType: "application/json",
-    data: stateObjt,
-    dataType: 'text',
-    cache: false,
-    success: function (data) {
-    console.log(data);
-    var stateCasesMap = JSON.parse(data);
-    createStateCasesHashMap(stateCasesMap);
-    L.geoJson(geojsonFeature, {style: styleState}).addTo(mymap);
-    }
-});
-
-
-var stateCasesHashMap;
-function createStateCasesHashMap(stateCasesMap){
-    stateCasesHashMap = new Map(Object.entries(stateCasesMap));
-    console.log(stateCasesHashMap);
-
-}
-function styleState(feature) {
-    let stateName = feature.properties.NAME
-    let cases = stateCasesHashMap.get(stateName.toUpperCase());
-    return {
-        fillColor: getColor(cases),
-        weight: 2,
-        opacity: 1,
-        color: 'white',
-        dashArray: '3',
-        fillOpacity: 0.5
-    };
-
 }
 
-
-function getColor(d) {
-    return d > 3000 ? '#800026' :
-           d > 2500  ? '#BD0026' :
-           d > 2000  ? '#E31A1C' :
-           d > 1500  ? '#FC4E2A' :
-           d > 1000   ? '#FD8D3C' :
-           d > 500   ? '#FEB24C' :
-           d > 100   ? '#FED976' :
-                      '#FFEDA0';
-}
 
