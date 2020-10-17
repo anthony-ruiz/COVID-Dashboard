@@ -19,6 +19,7 @@ public class Data {
 */
     private List<State> stateList = new ArrayList<State>();
     private HashMap<String,String> stateNameAbrevMap = new HashMap<String,String>();
+    private HashMap<String,String> stateAbrevNameMap = new HashMap<String,String>();
 
     //creates a logger
     private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
@@ -27,6 +28,7 @@ public class Data {
         populateStateData();
         populateStateAbreviations();
         populateStatePopulation();
+        populateStateNames();
     }
 
 
@@ -77,6 +79,30 @@ public class Data {
             log.info(key + ":" + value);
             });
     }
+
+    private void populateStateNames() throws IOException {
+        ClassLoader loader = Data.class.getClassLoader();
+        File FileToRead = new File(loader.getResource("static/media/state_names.txt").getFile());
+        BufferedReader br = null;
+        String line = "";
+        String splitBy = ",";
+        br = new BufferedReader(new FileReader(FileToRead));
+        while ((line = br.readLine()) != null) {
+            String[] stateLine = line.split(splitBy);
+            stateAbrevNameMap.put(stateLine[1], stateLine[0]);
+        }
+        br.close();
+
+        //TESTING
+        //prints the Hashmap of states names and state Abreviations
+        stateAbrevNameMap.forEach((key, value) -> {
+            log.info(key + ":" + value);
+        });
+    }
+    public String getStateName(String stateAbreviaton){
+        return  stateAbrevNameMap.get(stateAbreviaton.toUpperCase());
+    }
+
     private void populateStatePopulation() throws IOException {
         ClassLoader loader = Data.class.getClassLoader();
         File FileToRead = new File(loader.getResource("static/media/states_population.txt").getFile());
