@@ -18,6 +18,9 @@ public class State {
     private int inIcuCumulative;
     private int recovered;
     private int population;
+    private int deathConfirmed;
+    private int deathIncrease;
+    private int positiveIncrease;
 
     public State() {
     }
@@ -48,6 +51,29 @@ public class State {
         this.name = name;
     }
 
+    public int getPositiveIncrease() {
+        return positiveIncrease;
+    }
+
+    public void setPositiveIncrease(int positiveIncrease) {
+        this.positiveIncrease = positiveIncrease;
+    }
+
+    public int getDeathConfirmed() {
+        return deathConfirmed;
+    }
+
+    public void setDeathConfirmed(int deathConfirmed) {
+        this.deathConfirmed = deathConfirmed;
+    }
+
+    public int getDeathIncrease() {
+        return deathIncrease;
+    }
+
+    public void setDeathIncrease(int deathIncrease) {
+        this.deathIncrease = deathIncrease;
+    }
 
     public int getPopulation() {
         return population;
