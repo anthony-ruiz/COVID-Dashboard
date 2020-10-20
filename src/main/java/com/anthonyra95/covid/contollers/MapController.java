@@ -16,12 +16,12 @@ import java.util.Map;
 public class MapController {
 
     private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
-
+    Data data = CovidApplication.getData();
 
     @ResponseBody
     @RequestMapping(value = "/casesPerMil", method = RequestMethod.POST, produces = "application/json")
     public Map casesPerMil(@RequestBody String stateJSON) throws IOException {
-        Data data = CovidApplication.getData();
+
 
         HashMap<String,Integer> casesPerMilMap = new HashMap<String, Integer>();
         for(State state : data.getStateList()){
@@ -34,24 +34,19 @@ public class MapController {
         return casesPerMilMap;
     }
 
-//    @ResponseBody
-//    @RequestMapping(value = "/casesPerMil", method = RequestMethod.POST, produces = "application/json")
-//    public String[][] casesPerMil(@RequestBody String stateJSON) throws IOException {
-//
-//        Data data = CovidApplication.getData();
-//        String[][] stateCasesPerMil = new String[2][60];
-//        int arrayIndex = 0;
-//
-//        for(State state : data.getStateList()){
-//            if(state.getPopulation() != 0 ){
-//                int hundredThousandsOfPeople = state.getPopulation() / 100000;
-//                stateCasesPerMil[0][arrayIndex] = state.getName();
-//                stateCasesPerMil[1][arrayIndex] = String.valueOf(state.getPositive() / hundredThousandsOfPeople);
-//                arrayIndex++;
-//                log.info(state.getName() + " : " + state.getPositive() / hundredThousandsOfPeople + " Cases per 100k");
-//            }
-//        }
-//        return stateCasesPerMil;
-//    }
+
+    @ResponseBody
+    @RequestMapping(value = "/casesInLastDay", method = RequestMethod.POST, produces = "application/json")
+    public Map casesInLastDay(@RequestBody String stateJSON) throws IOException {
+
+        HashMap<String,Integer> casesInLastDay = new HashMap<String, Integer>();
+        for(State state : data.getStateList()){
+
+            casesInLastDay.put( data.getStateName(state.getName()), state.getPositiveIncrease());
+            log.info(data.getStateName(state.getName()) + " : " + state.getPositiveIncrease()  + " Cases increase");
+
+        }
+        return casesInLastDay;
+    }
 
 }
