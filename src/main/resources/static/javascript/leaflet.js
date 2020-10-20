@@ -1,7 +1,7 @@
 
 
-var mymap = L.map('map',{ zoomControl: false }).setView([40, -100], 5);
-var geojsonFeature  = usa_map;
+var mymap = L.map('map', { zoomControl: false }).setView([40, -100], 5);
+var geojsonFeature = usa_map;
 var mapLayers;
 var colorMapBy;
 
@@ -15,9 +15,12 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
     minZoom: 5
 }).addTo(mymap);
 
-colorMap("casesPerMil");
-//gets the number of cases per mil for all states
-function colorMap(colorBy){
+colorMap("casesPerMil"); //we color the states by cases per mil by default 
+
+//request a hashmap from the server format 
+//the values returned differ depending on what the user selected as the data to be visualized
+//possible data: cases per mil, new cases, new deaths
+function colorMap(colorBy) {
     colorMapBy = colorBy;
     $.ajax({
         type: "POST",
@@ -27,24 +30,25 @@ function colorMap(colorBy){
         dataType: 'text',
         cache: false,
         success: function (data) {
-        console.log(data);
-        var responseData = JSON.parse(data);
-        createStateCasesHashMap(responseData);
-        mapLayers = L.geoJSON(geojsonFeature, {
-            style: styleState,
-            onEachFeature: onEachFeature
-        }).addTo(mymap);
-        legend.addTo(mymap);
+            console.log(data);
+            var responseData = JSON.parse(data);
+            createStateCasesHashMap(responseData);
+            mapLayers = L.geoJSON(geojsonFeature, {
+                style: styleState,
+                onEachFeature: onEachFeature
+            }).addTo(mymap);
+            legend.addTo(mymap);
         }
     });
 }
-//create a hashmap of the Key:State | Value: Cases
+
+//create a hashmap of the data returned by the server(KEY: State, VALUE: value )
 var stateCasesHashMap;
-function createStateCasesHashMap(responseData){
+function createStateCasesHashMap(responseData) {
     stateCasesHashMap = new Map(Object.entries(responseData));
 }
 
-//Color the state states depending on cases
+//Coloring the state states depending on cases
 function styleState(feature) {
     let stateName = feature.properties.NAME
     let cases = stateCasesHashMap.get(stateName.toUpperCase());
@@ -57,57 +61,59 @@ function styleState(feature) {
         fillOpacity: 0.6
     };
 }
-//color : number of cases key
+
+//returns the color that the state will be colored depending on value
 function getColor(cases) {
-    if(colorMapBy == "casesPerMil"){
-        return cases > 3000  ? '#140951' :
-               cases > 2500  ? '#152069' :
-               cases > 2000  ? '#244A80' :
-               cases > 1500  ? '#377A98' :
-               cases > 1000  ? '#4EADAF' :
-               cases > 500   ? '#69C6AF' :
-               cases > 100   ? '#88DEB0' :
-                               '#B9DBC8';
+    if (colorMapBy == "casesPerMil") {
+        return cases > 3000 ? '#140951' :
+            cases > 2500 ? '#152069' :
+                cases > 2000 ? '#244A80' :
+                    cases > 1500 ? '#377A98' :
+                        cases > 1000 ? '#4EADAF' :
+                            cases > 500 ? '#69C6AF' :
+                                cases > 100 ? '#88DEB0' :
+                                    '#B9DBC8';
     }
-    else if(colorMapBy == "newCases"){
-         return cases > 2000  ? '#140951' :
-                cases > 1000  ? '#152069' :
-                cases > 500  ? '#244A80' :
-                cases > 200  ? '#377A98' :
-                cases > 100  ? '#4EADAF' :
-                cases > 50   ? '#69C6AF' :
-                cases > 10   ? '#88DEB0' :
-                                '#B9DBC8';
+    else if (colorMapBy == "newCases") {
+        return cases > 2000 ? '#140951' :
+            cases > 1000 ? '#152069' :
+                cases > 500 ? '#244A80' :
+                    cases > 200 ? '#377A98' :
+                        cases > 100 ? '#4EADAF' :
+                            cases > 50 ? '#69C6AF' :
+                                cases > 10 ? '#88DEB0' :
+                                    '#B9DBC8';
     }
-    else if(colorMapBy == "newDeaths"){
-             return cases > 100  ? '#140951' :
-                    cases > 80  ? '#152069' :
-                    cases > 60  ? '#244A80' :
-                    cases > 40  ? '#377A98' :
-                    cases > 20  ? '#4EADAF' :
-                    cases > 10   ? '#69C6AF' :
-                    cases > 5   ? '#88DEB0' :
+    else if (colorMapBy == "newDeaths") {
+        return cases > 100 ? '#140951' :
+            cases > 80 ? '#152069' :
+                cases > 60 ? '#244A80' :
+                    cases > 40 ? '#377A98' :
+                        cases > 20 ? '#4EADAF' :
+                            cases > 10 ? '#69C6AF' :
+                                cases > 5 ? '#88DEB0' :
                                     '#B9DBC8';
     }
 
 }
 
-//bind States to create request (get specific  information of state)
+//binds events to each of the states
 function onEachFeature(feature, layer) {
-
     layer.on({
-         mouseover: highlightState,
-         mouseout: resetHighlight,
-         click: clickState
+        mouseover: highlightState,
+        mouseout: resetHighlight,
+        click: clickState
 
     });
 }
 
-function clickState(e){
+// runs when the state is clicked
+function clickState(e) {
     var layer = e.target;
     var stateName = layer.feature.properties.NAME
     console.log(stateName)
-    //when the state is clicked it creates a request
+
+    //when the state is clicked it creates a request for in depth data for that state
     $.ajax({
         type: "POST",
         url: "/stateRequested/",
@@ -118,13 +124,12 @@ function clickState(e){
         success: function (data) {
             var stateInfo = JSON.parse(data);
             console.log(data);
-            info.update(layer.feature.properties , stateInfo);
+            info.update(layer.feature.properties, stateInfo);
         }
-
     });
-
 }
 
+//when state is hovered over changes color
 function highlightState(e) {
     var layer = e.target;
 
@@ -135,68 +140,67 @@ function highlightState(e) {
         fillOpacity: 0.9
     });
 }
+
+//when stop hovering over state reset color
 function resetHighlight(e) {
     mapLayers.resetStyle(e.target);
 }
 
-
+//creates info div to show specific state data
 var info = L.control();
-
 info.onAdd = function (map) {
-    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this._div = L.DomUtil.create('div', 'info');
     this.update();
     return this._div;
 };
 
-// method that we will use to update the control based on feature properties passed
-info.update = function (props , stateInfo) {
-    this._div.innerHTML = '<h4>Covid Information</h4>' +  (props ?
+//updates the info div depending on the state clicked
+info.update = function (props, stateInfo) {
+    this._div.innerHTML = '<h4>Covid Information</h4>' + (props ?
         '<b>' + props.NAME + '</b>' +
-        ' <div class="table">'+
-            '<table>'+
-                '<tr>'+
-                    '<td>'+stateInfo.positive+'</td><br /><td>positive cases</td><br />'+
-                '</tr>'+
-                '<tr>'+
-                    '<td>'+stateInfo.positiveIncrease+'</td><br /><td>New Cases since yesterday</td><br />'+
-                '</tr>'+
-                '<tr>'+
-                    '<td>'+stateInfo.deathIncrease+'</td><br /><td>Deaths in last Day</td><br />'+
-                '</tr>'+
-                '<tr>'+
-                    '<td>'+stateInfo.hospitalizedCurrently+'</td><br /><td>Currently Hospitalized</td><br />'+
-                '</tr>'+
-                '<tr>'+
-                    '<td>'+stateInfo.inIcuCurrently+'</td><br /><td> In Intensive Care Unit</td><br />'+
-                '</tr>'+
-                '<tr>'+
-                    '<td>'+stateInfo.recovered+'</td><br /><td>Recovered</td><br />'+
-                '</tr>'+
-                '<tr>'+
-                    '<td>'+stateInfo.deathConfirmed+'</td><br /><td>deathConfirmed</td><br />'+
-                '</tr>'+
-            '</table>'+
+        ' <div class="table">' +
+        '<table>' +
+        '<tr>' +
+        '<td>' + stateInfo.positive + '</td><br /><td>positive cases</td><br />' +
+        '</tr>' +
+        '<tr>' +
+        '<td>' + stateInfo.positiveIncrease + '</td><br /><td>New Cases since yesterday</td><br />' +
+        '</tr>' +
+        '<tr>' +
+        '<td>' + stateInfo.deathIncrease + '</td><br /><td>Deaths in last Day</td><br />' +
+        '</tr>' +
+        '<tr>' +
+        '<td>' + stateInfo.hospitalizedCurrently + '</td><br /><td>Currently Hospitalized</td><br />' +
+        '</tr>' +
+        '<tr>' +
+        '<td>' + stateInfo.inIcuCurrently + '</td><br /><td> In Intensive Care Unit</td><br />' +
+        '</tr>' +
+        '<tr>' +
+        '<td>' + stateInfo.recovered + '</td><br /><td>Recovered</td><br />' +
+        '</tr>' +
+        '<tr>' +
+        '<td>' + stateInfo.deathConfirmed + '</td><br /><td>deathConfirmed</td><br />' +
+        '</tr>' +
+        '</table>' +
         '</div>'
         : 'Click a state for more information');
 };
-
 info.addTo(mymap);
 
-var legend = L.control({position: 'bottomright'});
-
+// creates the legend that shows what each of the colors mean
+var legend = L.control({ position: 'bottomright' });
 legend.onAdd = function (map) {
-
     var div = L.DomUtil.create('div', 'info legend')
     var grades;
     var labels = [];
 
-    if( colorMapBy == "casesPerMil" ){
+    if (colorMapBy == "casesPerMil") {
         grades = [0, 100, 500, 1000, 1500, 2000, 2500, 3000]
     }
-    else if( colorMapBy == "newCases" ){
+    else if (colorMapBy == "newCases") {
         grades = [0, 10, 50, 100, 200, 500, 1000, 2000]
     }
-    else if( colorMapBy == "newDeaths" ){
+    else if (colorMapBy == "newDeaths") {
         grades = [0, 5, 10, 20, 40, 60, 80, 100]
     }
 
@@ -206,49 +210,42 @@ legend.onAdd = function (map) {
             '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
             grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
     }
-
     return div;
 };
-
 legend.addTo(mymap);
 
 
-
-var chooseColoringBy = L.control({position: 'topleft'});
-
+//creates the div with radio buttons that allow the user to select what data they want visualized
+var chooseColoringBy = L.control({ position: 'topleft' });
 chooseColoringBy.onAdd = function (map) {
-    var div = L.DomUtil.create('div', 'chooseColoringBy'); // create a div with a class "choose Coloring"
-
+    var div = L.DomUtil.create('div', 'chooseColoringBy');
     div.innerHTML = '<h4>Color map by: </h4>' +
-         ' <div class="radioButtons">'+
-               '<input type="radio" id="totalCases" name="colorBy" checked="checked" onclick="ShowHideDiv()">'+
-               '<label for="totalCases">Cases per 1000 people </label><br>'+
-               '<input type="radio" id="newDeaths" name="colorBy" onclick="ShowHideDiv()">'+
-               '<label for="newDeaths">New Deaths</label><br>'+
-               '<input type="radio" id="newCases" name="colorBy" onclick="ShowHideDiv()">'+
-               '<label for="newCases">New Cases</label>'+
-         '</div>'
+        ' <div class="radioButtons">' +
+        '<input type="radio" id="totalCases" name="colorBy" checked="checked" onclick="ShowHideDiv()">' +
+        '<label for="totalCases">Cases per 1000 people </label><br>' +
+        '<input type="radio" id="newDeaths" name="colorBy" onclick="ShowHideDiv()">' +
+        '<label for="newDeaths">New Deaths</label><br>' +
+        '<input type="radio" id="newCases" name="colorBy" onclick="ShowHideDiv()">' +
+        '<label for="newCases">New Cases</label>' +
+        '</div>'
     return div;
 };
 chooseColoringBy.addTo(mymap);
 
-function ShowHideDiv(colorBy){
+//functions is called when a radio button is clicked it triggers the recoloring
+function ShowHideDiv(colorBy) {
     var chkcasesPerMil = document.getElementById("totalCases");
     var chknewCases = document.getElementById("newCases");
     var chknewDeaths = document.getElementById("newDeaths");
     mapLayers.clearLayers();
 
-
-    if(chkcasesPerMil.checked){
+    if (chkcasesPerMil.checked) {
         colorMap("casesPerMil");
     }
-    else if (chknewCases.checked){
+    else if (chknewCases.checked) {
         colorMap("newCases");
     }
     else {
         colorMap("newDeaths");
-
     }
-
-
 }
