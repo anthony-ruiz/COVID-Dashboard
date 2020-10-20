@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Controller
 public class MapController {
-    private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
+    // private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
     Data data = CovidApplication.getData();
 
     //returns a HashMap (Key: states , Value: Covid cases per 1000 people )
@@ -34,7 +34,7 @@ public class MapController {
             if (state.getPopulation() != 0) {
                 int hundredThousandsOfPeople = state.getPopulation() / 100000;
                 casesPerMilMap.put(data.getStateName(state.getName()), state.getPositive() / hundredThousandsOfPeople);
-                log.info(data.getStateName(state.getName()) + " : " + state.getPositive() / hundredThousandsOfPeople + " Cases per 100k");
+                // log.info(data.getStateName(state.getName()) + " : " + state.getPositive() / hundredThousandsOfPeople + " Cases per 100k");
             }
         }
         return casesPerMilMap;
@@ -48,7 +48,7 @@ public class MapController {
         HashMap<String, Integer> casesInLastDay = new HashMap<String, Integer>();
         for (State state : data.getStateList()) {
             casesInLastDay.put(data.getStateName(state.getName()), state.getPositiveIncrease());
-            log.info(data.getStateName(state.getName()) + " : " + state.getPositiveIncrease() + " Cases increase");
+            // log.info(data.getStateName(state.getName()) + " : " + state.getPositiveIncrease() + " Cases increase");
         }
         return casesInLastDay;
     }
@@ -61,7 +61,7 @@ public class MapController {
         HashMap<String, Integer> deadthsInLastDay = new HashMap<String, Integer>();
         for (State state : data.getStateList()) {
             deadthsInLastDay.put(data.getStateName(state.getName()), state.getDeathIncrease());
-            log.info(data.getStateName(state.getName()) + " : " + state.getDeathIncrease() + " Death increase");
+            // log.info(data.getStateName(state.getName()) + " : " + state.getDeathIncrease() + " Death increase");
         }
         return deadthsInLastDay;
     }

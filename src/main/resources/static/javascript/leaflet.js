@@ -30,7 +30,7 @@ function colorMap(colorBy) {
         dataType: 'text',
         cache: false,
         success: function (data) {
-            console.log(data);
+            // console.log(data);
             var responseData = JSON.parse(data);
             createStateCasesHashMap(responseData);
             mapLayers = L.geoJSON(geojsonFeature, {
@@ -111,7 +111,7 @@ function onEachFeature(feature, layer) {
 function clickState(e) {
     var layer = e.target;
     var stateName = layer.feature.properties.NAME
-    console.log(stateName)
+    // console.log(stateName)
 
     //when the state is clicked it creates a request for in depth data for that state
     $.ajax({
@@ -123,7 +123,7 @@ function clickState(e) {
         cache: false,
         success: function (data) {
             var stateInfo = JSON.parse(data);
-            console.log(data);
+            // console.log(data);
             info.update(layer.feature.properties, stateInfo);
         }
     });

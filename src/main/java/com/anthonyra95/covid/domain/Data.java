@@ -25,7 +25,7 @@ public class Data {
     private HashMap<String, String> stateNameAbrevMap = new HashMap<String, String>();
     private HashMap<String, String> stateAbrevNameMap = new HashMap<String, String>();
 
-    private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
+    //private static final Logger log = LoggerFactory.getLogger(CovidApplication.class);
 
     //populates all of the data 
     public void populateData() throws IOException {
@@ -41,12 +41,12 @@ public class Data {
         stateList = mapper.readValue(new URL("https://api.covidtracking.com/v1/states/current.json"),
                 new TypeReference<List<State>>() {
                 });
-        //TESTING
-        //print the states  and number of cases
-        log.info("populating state data");
-        for (State state : stateList) {
-            log.info("saving state: " + state.toString());
-        }
+        // //TESTING
+        // //print the states  and number of cases
+        // log.info("populating state data");
+        // for (State state : stateList) {
+        //     log.info("saving state: " + state.toString());
+        // }
 
     }
 
@@ -80,11 +80,11 @@ public class Data {
         }
         br.close();
 
-        //TESTING
-        //prints the Hashmap of states names and state Abreviations
-        stateNameAbrevMap.forEach((key, value) -> {
-            log.info(key + ":" + value);
-        });
+        // //TESTING
+        // //prints the Hashmap of states names and state Abreviations
+        // stateNameAbrevMap.forEach((key, value) -> {
+        //     log.info(key + ":" + value);
+        // });
     }
 
     //populates a HashMap of Key: state Abreviation, Value: stateName 
@@ -101,11 +101,11 @@ public class Data {
         }
         br.close();
 
-        //TESTING
-        //prints the Hashmap of states names and state Abreviations
-        stateAbrevNameMap.forEach((key, value) -> {
-            log.info(key + ":" + value);
-        });
+        // //TESTING
+        // //prints the Hashmap of states names and state Abreviations
+        // stateAbrevNameMap.forEach((key, value) -> {
+        //     log.info(key + ":" + value);
+        // });
     }
 
     //Gets the population from each state and adds it to the state objects 
@@ -122,7 +122,7 @@ public class Data {
             for (State state : stateList) {
                 if (state.getName().equals(getStateAbreviation(stateLine[0]))) {
                     state.setPopulation(Integer.parseInt(stateLine[1]));
-                    log.info(state.toString());
+                    // log.info(state.toString());
                 }
             }
         }
@@ -138,5 +138,5 @@ public class Data {
     public String getStateAbreviation(String stateName) {
         return stateNameAbrevMap.get(stateName.toUpperCase());
     }
-    
+
 }
