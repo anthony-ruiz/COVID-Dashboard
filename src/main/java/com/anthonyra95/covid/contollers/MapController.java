@@ -36,8 +36,8 @@ public class MapController {
 
 
     @ResponseBody
-    @RequestMapping(value = "/casesInLastDay", method = RequestMethod.POST, produces = "application/json")
-    public Map casesInLastDay(@RequestBody String stateJSON) throws IOException {
+    @RequestMapping(value = "/newCases", method = RequestMethod.POST, produces = "application/json")
+    public Map newCases(@RequestBody String stateJSON) throws IOException {
 
         HashMap<String,Integer> casesInLastDay = new HashMap<String, Integer>();
         for(State state : data.getStateList()){
@@ -47,6 +47,21 @@ public class MapController {
 
         }
         return casesInLastDay;
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "/newDeaths", method = RequestMethod.POST, produces = "application/json")
+    public Map newDeaths(@RequestBody String stateJSON) throws IOException {
+
+        HashMap<String,Integer> deadthsInLastDay = new HashMap<String, Integer>();
+        for(State state : data.getStateList()){
+
+            deadthsInLastDay.put( data.getStateName(state.getName()), state.getDeathIncrease());
+            log.info(data.getStateName(state.getName()) + " : " + state.getDeathIncrease()  + " Death increase");
+
+        }
+        return deadthsInLastDay;
     }
 
 }

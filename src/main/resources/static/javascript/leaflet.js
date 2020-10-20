@@ -2,7 +2,8 @@
 
 var mymap = L.map('map',{ zoomControl: false }).setView([40, -100], 5);
 var geojsonFeature  = usa_map;
-var geojson;
+var mapLayers;
+var colorMapBy;
 
 //background layer
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
@@ -17,7 +18,7 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
 colorMap("casesPerMil");
 //gets the number of cases per mil for all states
 function colorMap(colorBy){
-
+    colorMapBy = colorBy;
     $.ajax({
         type: "POST",
         url: "/" + colorBy + "/",
@@ -27,19 +28,20 @@ function colorMap(colorBy){
         cache: false,
         success: function (data) {
         console.log(data);
-        var stateCasesMap = JSON.parse(data);
-        createStateCasesHashMap(stateCasesMap);
-        geojson = L.geoJSON(geojsonFeature, {
+        var responseData = JSON.parse(data);
+        createStateCasesHashMap(responseData);
+        mapLayers = L.geoJSON(geojsonFeature, {
             style: styleState,
             onEachFeature: onEachFeature
         }).addTo(mymap);
+        legend.addTo(mymap);
         }
     });
 }
-//create a hashmap of the Key:State | Value: Cases per Mil
+//create a hashmap of the Key:State | Value: Cases
 var stateCasesHashMap;
-function createStateCasesHashMap(stateCasesMap){
-    stateCasesHashMap = new Map(Object.entries(stateCasesMap));
+function createStateCasesHashMap(responseData){
+    stateCasesHashMap = new Map(Object.entries(responseData));
 }
 
 //Color the state states depending on cases
@@ -57,14 +59,37 @@ function styleState(feature) {
 }
 //color : number of cases key
 function getColor(cases) {
-    return cases > 3000  ? '#140951' :
-           cases > 2500  ? '#152069' :
-           cases > 2000  ? '#244A80' :
-           cases > 1500  ? '#377A98' :
-           cases > 1000  ? '#4EADAF' :
-           cases > 500   ? '#69C6AF' :
-           cases > 100   ? '#88DEB0' :
-                           '#B9DBC8';
+    if(colorMapBy == "casesPerMil"){
+        return cases > 3000  ? '#140951' :
+               cases > 2500  ? '#152069' :
+               cases > 2000  ? '#244A80' :
+               cases > 1500  ? '#377A98' :
+               cases > 1000  ? '#4EADAF' :
+               cases > 500   ? '#69C6AF' :
+               cases > 100   ? '#88DEB0' :
+                               '#B9DBC8';
+    }
+    else if(colorMapBy == "newCases"){
+         return cases > 2000  ? '#140951' :
+                cases > 1000  ? '#152069' :
+                cases > 500  ? '#244A80' :
+                cases > 200  ? '#377A98' :
+                cases > 100  ? '#4EADAF' :
+                cases > 50   ? '#69C6AF' :
+                cases > 10   ? '#88DEB0' :
+                                '#B9DBC8';
+    }
+    else if(colorMapBy == "newDeaths"){
+             return cases > 100  ? '#140951' :
+                    cases > 80  ? '#152069' :
+                    cases > 60  ? '#244A80' :
+                    cases > 40  ? '#377A98' :
+                    cases > 20  ? '#4EADAF' :
+                    cases > 10   ? '#69C6AF' :
+                    cases > 5   ? '#88DEB0' :
+                                    '#B9DBC8';
+    }
+
 }
 
 //bind States to create request (get specific  information of state)
@@ -111,7 +136,7 @@ function highlightState(e) {
     });
 }
 function resetHighlight(e) {
-    geojson.resetStyle(e.target);
+    mapLayers.resetStyle(e.target);
 }
 
 
@@ -161,9 +186,19 @@ var legend = L.control({position: 'bottomright'});
 
 legend.onAdd = function (map) {
 
-    var div = L.DomUtil.create('div', 'info legend'),
-        grades = [0, 100, 500, 1000, 1500, 2000, 2500, 3000],
-        labels = [];
+    var div = L.DomUtil.create('div', 'info legend')
+    var grades;
+    var labels = [];
+
+    if( colorMapBy == "casesPerMil" ){
+        grades = [0, 100, 500, 1000, 1500, 2000, 2500, 3000]
+    }
+    else if( colorMapBy == "newCases" ){
+        grades = [0, 10, 50, 100, 200, 500, 1000, 2000]
+    }
+    else if( colorMapBy == "newDeaths" ){
+        grades = [0, 5, 10, 20, 40, 60, 80, 100]
+    }
 
     // loop through our density intervals and generate a label with a colored square for each interval
     for (var i = 0; i < grades.length; i++) {
@@ -186,32 +221,34 @@ chooseColoringBy.onAdd = function (map) {
 
     div.innerHTML = '<h4>Color map by: </h4>' +
          ' <div class="radioButtons">'+
-               '<input type="radio" id="totalCases" name="colorBy" onclick="ShowHideDiv()">'+
-               '<label for="totalCases">Total Cases</label><br>'+
-               '<input type="radio" id="newCases" name="colorBy" onclick="ShowHideDiv()">'+
-               '<label for="newCases">New Cases</label><br>'+
+               '<input type="radio" id="totalCases" name="colorBy" checked="checked" onclick="ShowHideDiv()">'+
+               '<label for="totalCases">Cases per 1000 people </label><br>'+
                '<input type="radio" id="newDeaths" name="colorBy" onclick="ShowHideDiv()">'+
-               '<label for="newDeaths">New Deaths</label>'+
+               '<label for="newDeaths">New Deaths</label><br>'+
+               '<input type="radio" id="newCases" name="colorBy" onclick="ShowHideDiv()">'+
+               '<label for="newCases">New Cases</label>'+
          '</div>'
     return div;
 };
 chooseColoringBy.addTo(mymap);
 
 function ShowHideDiv(colorBy){
-    var colorStatesBy;
-    var chktotalCases = document.getElementById("totalCases");
+    var chkcasesPerMil = document.getElementById("totalCases");
     var chknewCases = document.getElementById("newCases");
     var chknewDeaths = document.getElementById("newDeaths");
-    if(chktotalCases.checked){
-        colorStatesBy = "totalCases";
+    mapLayers.clearLayers();
+
+
+    if(chkcasesPerMil.checked){
+        colorMap("casesPerMil");
     }
     else if (chknewCases.checked){
-        colorStatesBy = "newCases";
+        colorMap("newCases");
     }
     else {
-        colorStatesBy = "newDeaths";
+        colorMap("newDeaths");
+
     }
-    geojson.clearLayers();
-    colorMap("casesPerMil");
+
 
 }
