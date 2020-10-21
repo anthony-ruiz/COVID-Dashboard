@@ -1,4 +1,4 @@
-# covid
+# COVID-19 Data Visualizer
 
 
 This application allows the user to visualize COVID case data for each of the states in the USA.
