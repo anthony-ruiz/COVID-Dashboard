@@ -4,6 +4,12 @@
 This application allows the user to visualize COVID case data for each of the states in the USA.
 It allows the user to compare all of the state's new deaths, new cases or total number of active cases per 1000 people (in order to account for population) by colour coding states that fall within certain ranges. The user can also select a certain state and it will provide more in depth data for that state.
 
+All of the data fetching and processing is done server-side. The front end creates GET (HTTP) requests to either:
+
+* Determine the number of cases / new cases / new deaths for all of the states so that they can be colored appropriately.
+* Get in-depth information for a given state
+
+
 ## Data Sources:
 
 * Covid case data was sourced from “The COVID Tracking Project” API  <https://covidtracking.com/> 
