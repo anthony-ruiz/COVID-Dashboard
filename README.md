@@ -1,7 +1,7 @@
 # COVID-19 Data Visualizer
 
 
-This application allows the user to visualize COVID case data for each of the states in the USA.
+This application allows the user to visualize COVID-19 case data for each of the states in the USA.
 It allows the user to compare all of the state's new deaths, new cases or total number of active cases per 1000 people (in order to account for population) by colour coding states that fall within certain ranges. The user can also select a certain state and it will provide more in depth data for that state.
 
 All of the data fetching and processing is done server-side. The front end creates GET (HTTP) requests to either:
